@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Custom T-Shirt Order Form</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            margin: 0;
+            padding: 0;
+            background: linear-gradient(to right, #74ebd5, #ACB6E5); 
+        }
+        .container {
+            width: 80%;
+            margin: auto;
+            overflow: hidden;
+            padding: 20px;
+            background: #ffffff;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+            border-radius: 8px;
+        }
+        h1 {
+            text-align: center;
+        }
+        form {
+            max-width: 600px;
+            margin: auto;
+        }
+        fieldset {
+            border: 1px solid #ddd;
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+        legend {
+            padding: 0 10px;
+            font-weight: bold;
+        }
+        label {
+            display: block;
+            margin-bottom: 10px;
+            font-weight: bold;
+        }
+        input, select, textarea {
+            width: 100%;
+            padding: 8px;
+            margin-bottom: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+        textarea {
+            height: 100px;
+        }
+        .buttons {
+            display: flex;
+            justify-content: space-between;
+            gap: 10px;
+        }
+        .buttons button, .buttons input[type="reset"] {
+            flex: 1;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 4px;
+            color: #fff;
+            cursor: pointer;
+            font-size: 16px;
+        }
+        .buttons button {
+            background: #28a745;
+        }
+        .buttons input[type="reset"] {
+            background: #ccc;
+        }
+        .buttons button:hover {
+            background: #218838;
+        }
+        .buttons input[type="reset"]:hover {
+            opacity: 0.8;
+        }
+        .receipt {
+            display: none;
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Order Your Customized T-Shirt</h1>
+        <form id="orderForm">
+            <fieldset>
+                <legend>T-Shirt Customization</legend>
+                
+                <label for="tagline">Tagline on the Shirt:</label>
+                <input type="text" id="tagline" name="tagline" placeholder="Enter your tagline" required maxlength="50">
+
+                <label for="color">Color:</label>
+                <select id="color" name="color" required>
+                    <option value="">Select a color</option>
+                    <option value="red">Red</option>
+                    <option value="blue">Blue</option>
+                    <option value="green">Green</option>
+                    <option value="black">Black</option>
+                    <option value="white">White</option>
+                </select>
+
+                <label for="size">Size:</label>
+                <select id="size" name="size" required>
+                    <option value="">Select a size</option>
+                    <option value="small">Small</option>
+                    <option value="medium">Medium</option>
+                    <option value="large">Large</option>
+                    <option value="xlarge">X-Large</option>
+                </select>
+
+                <label for="quantity">Quantity:</label>
+                <input type="number" id="quantity" name="quantity" min="1" max="100" placeholder="Enter quantity" required>
+
+                <label for="delivery-date">Delivery Date:</label>
+                <input type="date" id="delivery-date" name="delivery_date" required>
+
+                <fieldset>
+                    <legend>Delivery Details</legend>
+
+                    <label for="name">Recipient's Name:</label>
+                    <input type="text" id="name" name="name" placeholder="Enter recipient's name" required pattern="[A-Za-z\s]+" title="Name should only contain letters and spaces.">
+
+                    <label for="address">Address:</label>
+                    <input type="text" id="address" name="address" placeholder="Enter delivery address" required>
+
+                    <label for="email">Email:</label>
+                    <input type="email" id="email" name="email" placeholder="Enter recipient's email" required>
+
+                    <label for="phone">Phone Number:</label>
+                    <input type="text" id="phone" name="phone" placeholder="Enter recipient's phone number" required pattern="\d{10}" title="Phone number must be exactly 10 digits.">
+                </fieldset>
+
+                <label for="comments">Additional Comments:</label>
+                <textarea id="comments" name="comments" placeholder="Enter any additional comments or special instructions" maxlength="200"></textarea>
+            </fieldset>
+
+            <div class="buttons">
+                <button type="submit">Submit Order</button>
+                <input type="reset" value="Reset Form">
+            </div>
+        </form>
+
+        <div class="receipt" id="receipt">
+            <h2>Order Receipt</h2>
+            <p id="receiptDetails"></p>
+        </div>
+    </div>
+
+    <script>
+        class Person {
+            constructor(name, phone) {
+                this.name = name;
+                this.phone = phone;
+            }
+
+            // Arrow function for displaying details
+            displayDetails = () => {
+                return `Name: ${this.name}, Phone: ${this.phone}`;
+            }
+        }
+
+        class Student extends Person {
+            constructor(name, phone, rollNo) {
+                super(name, phone);
+                this.rollNo = rollNo;
+                if (this.rollNo === 0) {
+                    throw new Error('Roll number cannot be zero.');
+                }
+            }
+
+            // Method overriding
+            displayDetails() {
+                return `${super.displayDetails()}, Roll No: ${this.rollNo}`;
+            }
+        }
+
+        document.getElementById('orderForm').addEventListener('submit', function(event) {
+            event.preventDefault();
+
+            // Validation
+            const phone = document.getElementById('phone').value;
+            if (phone.length !== 10 || isNaN(phone)) {
+                alert('Phone number must be exactly 10 digits and contain only numbers.');
+                return;
+            }
+
+            // Form data
+            const name = document.getElementById('name').value;
+            const tagline = document.getElementById('tagline').value;
+            const comments = document.getElementById('comments').value;
+
+            // Create Person and Student instances (using static rollNo for demonstration)
+            try {
+                const student = new Student(name, phone, 1); // Replace `1` with dynamic roll number if needed
+
+                // Generate receipt
+                const receiptDate = new Date();
+                const formattedDate = receiptDate.toLocaleDateString();
+                document.getElementById('receiptDetails').innerHTML = `
+                    Order Confirmation:<br>
+                    ${student.displayDetails()}<br>
+                    Tagline: ${tagline}<br>
+                    Comments: ${comments}<br>
+                    Date: ${formattedDate}
+                `;
+                document.getElementById('receipt').style.display = 'block';
+            } catch (error) {
+                alert(error.message);
+            }
+        });
+    </script>
+</body>
+</html>
